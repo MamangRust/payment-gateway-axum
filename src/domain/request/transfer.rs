@@ -71,6 +71,10 @@ impl UpdateTransferAmountRequest {
             return Err("Transfer amount must be greater than zero".to_string());
         }
 
+        if self.transfer_amount < 50000 {
+            return Err("Transfer amount must be at least 50,000".to_string());
+        }
+
         Ok(())
     }
 }

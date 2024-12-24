@@ -1,30 +1,51 @@
 use tracing::{error, info};
 
-use crate::{abstract_trait::user::{DynUserRepository, UserServiceTrait}, config::hashing::Hashing, domain::{request::{auth::RegisterRequest, user::{CreateUserRequest, UpdateUserRequest}}, response::{user::UserResponse, ApiResponse, ErrorResponse}}, utils::{errors::AppError, random_vcc::random_vcc}};
+use crate::{
+    abstract_trait::{
+        hashing::DynHashing,
+        user::{DynUserRepository, UserServiceTrait},
+    },
+    domain::{
+        request::{
+            auth::RegisterRequest,
+            user::{CreateUserRequest, UpdateUserRequest},
+        },
+        response::{user::UserResponse, ApiResponse, ErrorResponse},
+    },
+    utils::{errors::AppError, random_vcc::random_vcc},
+};
 
 use async_trait::async_trait;
 
 pub struct UserService {
     repository: DynUserRepository,
-    hashing: Hashing
+    hashing: DynHashing,
 }
 
 impl UserService {
-    pub fn new(repository: DynUserRepository, hashing: Hashing) -> Self {
-        Self { repository, hashing }
+    pub fn new(repository: DynUserRepository, hashing: DynHashing) -> Self {
+        Self {
+            repository,
+            hashing,
+        }
     }
 }
 
-
-
 #[async_trait]
-impl UserServiceTrait for UserService{
-    async fn get_users(&self) -> Result<ApiResponse<Vec<UserResponse>>, ErrorResponse>{
-        let users = self.repository.find_all().await.map_err(AppError::from).map_err(ErrorResponse::from)?;
+impl UserServiceTrait for UserService {
+    async fn get_users(&self) -> Result<ApiResponse<Vec<UserResponse>>, ErrorResponse> {
+        let users = self
+            .repository
+            .find_all()
+            .await
+            .map_err(AppError::from)
+            .map_err(ErrorResponse::from)?;
 
-        let users_response: Vec<UserResponse> = users.into_iter().map(|users| UserResponse::from(users)).collect();
-    
-       
+        let users_response: Vec<UserResponse> = users
+            .into_iter()
+            .map(|users| UserResponse::from(users))
+            .collect();
+
         Ok(ApiResponse {
             status: "success".to_string(),
             message: "Users retrieved successfully".to_string(),
@@ -35,9 +56,14 @@ impl UserServiceTrait for UserService{
     async fn find_by_id(
         &self,
         id: i32,
-    ) -> Result<ApiResponse<Option<UserResponse>>, ErrorResponse>  {
-        let user = self.repository.find_by_id(id).await.map_err(AppError::from).map_err(ErrorResponse::from)?;
-        
+    ) -> Result<ApiResponse<Option<UserResponse>>, ErrorResponse> {
+        let user = self
+            .repository
+            .find_by_id(id)
+            .await
+            .map_err(AppError::from)
+            .map_err(ErrorResponse::from)?;
+
         if let Some(user) = user {
             Ok(ApiResponse {
                 status: "success".to_string(),
@@ -45,7 +71,10 @@ impl UserServiceTrait for UserService{
                 data: Some(UserResponse::from(user)),
             })
         } else {
-            Err(ErrorResponse::from(AppError::NotFound(format!("User with id {} not found", id))))
+            Err(ErrorResponse::from(AppError::NotFound(format!(
+                "User with id {} not found",
+                id
+            ))))
         }
     }
 
@@ -69,7 +98,9 @@ impl UserServiceTrait for UserService{
 
         if let Err(validation_err) = input.validate() {
             error!("Validation failed for user create: {}", validation_err);
-            return Err(ErrorResponse::from(AppError::ValidationError(validation_err)));
+            return Err(ErrorResponse::from(AppError::ValidationError(
+                validation_err,
+            )));
         }
 
         let hashed_password = self
@@ -110,13 +141,20 @@ impl UserServiceTrait for UserService{
         &self,
         input: &UpdateUserRequest,
     ) -> Result<Option<ApiResponse<UserResponse>>, ErrorResponse> {
-        let user = self.repository.update_user(input).await.map_err(AppError::from).map_err(ErrorResponse::from)?;
+        let user = self
+            .repository
+            .update_user(input)
+            .await
+            .map_err(AppError::from)
+            .map_err(ErrorResponse::from)?;
 
         if let Err(validation_err) = input.validate() {
             error!("Validation failed for user update: {}", validation_err);
-            return Err(ErrorResponse::from(AppError::ValidationError(validation_err)));
+            return Err(ErrorResponse::from(AppError::ValidationError(
+                validation_err,
+            )));
         }
-        
+
         Ok(Some(ApiResponse {
             status: "success".to_string(),
             message: "User updated successfully".to_string(),
@@ -125,8 +163,12 @@ impl UserServiceTrait for UserService{
     }
 
     async fn delete_user(&self, id: i32) -> Result<ApiResponse<()>, ErrorResponse> {
-        self.repository.delete_user(id).await.map_err(AppError::from).map_err(ErrorResponse::from)?;
-        
+        self.repository
+            .delete_user(id)
+            .await
+            .map_err(AppError::from)
+            .map_err(ErrorResponse::from)?;
+
         Ok(ApiResponse {
             status: "success".to_string(),
             message: "User deleted successfully".to_string(),

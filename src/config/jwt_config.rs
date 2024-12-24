@@ -1,10 +1,11 @@
+use async_trait::async_trait;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{
     decode, encode, errors::ErrorKind as JwtError, DecodingKey, EncodingKey, Header, Validation,
 };
 use serde::{Deserialize, Serialize};
 
-use crate::utils::errors::AppError;
+use crate::{abstract_trait::jwt::JwtServiceTrait, utils::errors::AppError};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
@@ -30,8 +31,11 @@ impl JwtConfig {
             jwt_secret: jwt_secret.to_string(),
         }
     }
+}
 
-    pub fn generate_token(&self, user_id: i64) -> Result<String, AppError> {
+#[async_trait]
+impl JwtServiceTrait for JwtConfig {
+    fn generate_token(&self, user_id: i64) -> Result<String, AppError> {
         let now = Utc::now();
         let iat = now.timestamp() as usize;
         let exp = (now + Duration::minutes(60)).timestamp() as usize;
@@ -48,7 +52,7 @@ impl JwtConfig {
         }
     }
 
-    pub fn verify_token(&self, token: &str) -> Result<i64, AppError> {
+    fn verify_token(&self, token: &str) -> Result<i64, AppError> {
         let decoding_key = DecodingKey::from_secret(self.jwt_secret.as_ref());
 
         match decode::<Claims>(token, &decoding_key, &Validation::default()) {

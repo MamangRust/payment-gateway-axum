@@ -1,9 +1,10 @@
 use async_trait::async_trait;
-use tracing::{info, error};
+use tracing::{error, info};
 
 use crate::{
-    abstract_trait::{auth::AuthServiceTrait, user::DynUserRepository},
-    config::{hashing::Hashing, jwt_config::JwtConfig},
+    abstract_trait::{
+        auth::AuthServiceTrait, hashing::DynHashing, jwt::DynJwtService, user::DynUserRepository,
+    },
     domain::{
         request::{
             auth::{LoginRequest, RegisterRequest},
@@ -16,12 +17,16 @@ use crate::{
 
 pub struct AuthService {
     repository: DynUserRepository,
-    hashing: Hashing,
-    jwt_config: JwtConfig,
+    hashing: DynHashing,
+    jwt_config: DynJwtService,
 }
 
 impl AuthService {
-    pub fn new(repository: DynUserRepository, hashing: Hashing, jwt_config: JwtConfig) -> Self {
+    pub fn new(
+        repository: DynUserRepository,
+        hashing: DynHashing,
+        jwt_config: DynJwtService,
+    ) -> Self {
         Self {
             repository,
             hashing,
@@ -51,8 +56,13 @@ impl AuthServiceTrait for AuthService {
         }
 
         if let Err(validation_err) = input.validate() {
-            error!("Validation failed for user registration: {}", validation_err);
-            return Err(ErrorResponse::from(AppError::ValidationError(validation_err)));
+            error!(
+                "Validation failed for user registration: {}",
+                validation_err
+            );
+            return Err(ErrorResponse::from(AppError::ValidationError(
+                validation_err,
+            )));
         }
 
         let hashed_password = self
@@ -62,9 +72,6 @@ impl AuthServiceTrait for AuthService {
             .map_err(|e| ErrorResponse::from(AppError::HashingError(e)))?;
 
         let noc_transfer = random_vcc().map(|value| Some(value)).unwrap_or(None);
-
-
-
 
         let request = CreateUserRequest {
             firstname: input.firstname.clone(),
@@ -103,11 +110,12 @@ impl AuthServiceTrait for AuthService {
             .map_err(ErrorResponse::from)?
             .ok_or_else(|| ErrorResponse::from(AppError::NotFound("User not found".to_string())))?;
 
-
-            if let Err(validation_err) = input.validate() {
-                error!("Validation failed for user login: {}", validation_err);
-                return Err(ErrorResponse::from(AppError::ValidationError(validation_err)));
-            }
+        if let Err(validation_err) = input.validate() {
+            error!("Validation failed for user login: {}", validation_err);
+            return Err(ErrorResponse::from(AppError::ValidationError(
+                validation_err,
+            )));
+        }
 
         if self
             .hashing

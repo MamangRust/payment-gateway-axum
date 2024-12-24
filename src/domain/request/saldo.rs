@@ -1,7 +1,7 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CreateSaldoRequest {
     #[serde(rename = "user_id")]
     pub user_id: i32,
@@ -24,7 +24,7 @@ impl CreateSaldoRequest {
     }
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct UpdateSaldoRequest {
     #[serde(rename = "saldo_id")]
     pub saldo_id: i32,
@@ -60,10 +60,6 @@ impl UpdateSaldoRequest {
             if amount < 50000 {
                 return Err("Withdraw amount must be at least 50000".to_string());
             }
-        }
-
-        if self.withdraw_amount.is_some() && self.withdraw_time.is_some() {
-            return Err("Only one of withdraw_amount or withdraw_time can be provided".to_string());
         }
 
         if self.withdraw_amount.is_none() && self.withdraw_time.is_none() {

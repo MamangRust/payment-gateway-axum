@@ -18,12 +18,10 @@ impl CreateUserRequest {
             return Err("First name is required".to_string());
         }
 
-        // Check if the last name is not empty
         if self.lastname.trim().is_empty() {
             return Err("Last name is required".to_string());
         }
 
-        // Validate email format (simple check using regex)
         let email_regex = Regex::new(r"^[\w\.-]+@[\w\.-]+\.[a-zA-Z]{2,}$").unwrap();
         if !email_regex.is_match(&self.email) {
             return Err("Invalid email format".to_string());
@@ -92,7 +90,6 @@ impl UpdateUserRequest {
             }
         }
 
-       
         if let (Some(ref password), Some(ref confirm_password)) =
             (self.password.as_ref(), self.confirm_password.as_ref())
         {
