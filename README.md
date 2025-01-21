@@ -1,4 +1,12 @@
-### Example Sea Orm in Axum
+### Example Payment Gateway Axum + Seaorm
+
+
+
+
+
+### Cara Kerjanya Payment Gateway ini yang menggunakan axum + seaorm
+<img src="./payment_gateway.png" alt="payment" />
+
 
 
 ### Migrate
