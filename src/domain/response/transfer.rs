@@ -1,16 +1,20 @@
 use chrono::{DateTime, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use crate::entities::transfers;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
 pub struct TransferResponse {
     pub transfer_id: i32,
     pub transfer_from: i32,
     pub transfer_to: i32,
     pub transfer_amount: i32,
     pub transfer_time: DateTime<Utc>,
+    #[schema(format = "date-time")]
     pub created_at: Option<DateTime<Utc>>,
+
+    #[schema(format = "date-time")]
     pub updated_at: Option<DateTime<Utc>>,
 }
 

@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use crate::utils::payment_method_validator::payment_method_validator;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct CreateTopupRequest {
     pub user_id: i32,
     pub topup_no: String,
@@ -36,7 +37,7 @@ impl CreateTopupRequest {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct UpdateTopupRequest {
     pub user_id: i32,
     pub topup_id: i32,
@@ -75,7 +76,6 @@ pub struct UpdateTopupAmount {
     pub topup_id: i32,
     pub topup_amount: i32,
 }
-
 
 impl UpdateTopupAmount {
     pub fn validate(&self) -> Result<(), String> {

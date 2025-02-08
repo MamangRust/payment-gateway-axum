@@ -1,5 +1,8 @@
 use crate::{
-    domain::request::saldo::{CreateSaldoRequest, UpdateSaldoRequest},
+    domain::{
+        request::saldo::{CreateSaldoRequest, UpdateSaldoRequest},
+        response::{saldo::SaldoResponse, ApiResponse},
+    },
     middleware::jwt,
     state::AppState,
 };
@@ -9,11 +12,25 @@ use axum::{
     middleware,
     response::IntoResponse,
     routing::{delete, get, post, put},
-    Json, Router,
+    Json, 
 };
 use serde_json::json;
+use utoipa_axum::router::OpenApiRouter;
 use std::sync::Arc;
 
+#[utoipa::path(
+    get,
+    path = "/api/saldos",
+    tag = "Saldo",
+    security(
+        ("bearer_auth" = [])
+    ),
+    responses(
+        (status = 200, description = "List of saldos", body = ApiResponse<Vec<SaldoResponse>>),
+        (status = 401, description = "Unauthorized", body = String),
+        (status = 500, description = "Internal Server Error", body = String),
+    )
+)]
 pub async fn get_saldos(
     State(data): State<Arc<AppState>>,
 ) -> Result<impl IntoResponse, (StatusCode, Json<serde_json::Value>)> {
@@ -23,6 +40,22 @@ pub async fn get_saldos(
     }
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/saldos/{id}",
+    tag = "Saldo",
+security(
+        ("bearer_auth" = [])
+    ),
+    params(
+        ("id" = i32, Path, description = "Saldo ID")
+    ),
+    responses(
+        (status = 200, description = "Saldo details", body = ApiResponse<Option<SaldoResponse>>),
+        (status = 401, description = "Unauthorized", body = String),
+        (status = 404, description = "Saldo not found", body = String),
+    )
+)]
 pub async fn get_saldo(
     State(data): State<Arc<AppState>>,
     Path(id): Path<i32>,
@@ -35,6 +68,22 @@ pub async fn get_saldo(
     }
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/saldos/users/{id}",
+    tag = "Saldo",
+    security(
+        ("bearer_auth" = [])
+    ),
+    params(
+        ("id" = i32, Path, description = "Saldo ID")
+    ),
+    responses(
+        (status = 200, description = "Saldo details", body = ApiResponse<Option<Vec<SaldoResponse>>>),
+        (status = 401, description = "Unauthorized", body = String),
+        (status = 404, description = "Saldo not found", body = String),
+    )
+)]
 pub async fn get_saldo_users(
     State(data): State<Arc<AppState>>,
     Path(id): Path<i32>,
@@ -47,6 +96,19 @@ pub async fn get_saldo_users(
     }
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/saldos/user/{id}",
+    tag = "Saldo",
+    security(
+        ("bearer_auth" = [])
+    ),
+    responses(
+        (status = 200, description = "List of saldos", body = ApiResponse<Option<SaldoResponse>>),
+        (status = 401, description = "Unauthorized", body = String),
+        (status = 500, description = "Internal Server Error", body = String),
+    )
+)]
 pub async fn get_saldo_user(
     State(data): State<Arc<AppState>>,
     Path(id): Path<i32>,
@@ -59,6 +121,19 @@ pub async fn get_saldo_user(
     }
 }
 
+#[utoipa::path(
+    post,
+    path = "/api/saldos",
+    tag = "Saldo",
+    security(
+        ("bearer_auth" = [])
+    ),
+    responses(
+        (status = 200, description = "List of saldos", body = ApiResponse<SaldoResponse>),
+        (status = 401, description = "Unauthorized", body = String),
+        (status = 500, description = "Internal Server Error", body = String),
+    )
+)]
 pub async fn create_saldo(
     State(data): State<Arc<AppState>>,
     Json(body): Json<CreateSaldoRequest>,
@@ -69,6 +144,19 @@ pub async fn create_saldo(
     }
 }
 
+#[utoipa::path(
+    put,
+    path = "/api/saldos/{id}",
+    tag = "Saldo",
+    security(
+        ("bearer_auth" = [])
+    ),
+    responses(
+        (status = 200, description = "List of saldos", body = ApiResponse<SaldoResponse>),
+        (status = 401, description = "Unauthorized", body = String),
+        (status = 500, description = "Internal Server Error", body = String),
+    )
+)]
 pub async fn update_saldo(
     State(data): State<Arc<AppState>>,
     Path(id): Path<i32>,
@@ -83,6 +171,19 @@ pub async fn update_saldo(
     }
 }
 
+#[utoipa::path(
+    delete,
+    path = "/api/saldos/{id}",
+    tag = "Saldo",
+    security(
+        ("bearer_auth" = [])
+    ),
+    responses(
+        (status = 200, description = "Saldo deleted successfully", body = serde_json::Value),
+        (status = 401, description = "Unauthorized", body = String),
+        (status = 500, description = "Internal Server Error", body = String),
+    )
+)]
 pub async fn delete_saldo(
     State(data): State<Arc<AppState>>,
     Path(id): Path<i32>,
@@ -100,15 +201,15 @@ pub async fn delete_saldo(
     }
 }
 
-pub fn saldos_routes(app_state: Arc<AppState>) -> Router {
-    Router::new()
+pub fn saldos_routes(app_state: Arc<AppState>) -> OpenApiRouter {
+    OpenApiRouter::new()
         .route("/api/saldos", get(get_saldos))
-        .route("/api/saldos/:id", get(get_saldo))
-        .route("/api/saldos/users/:id", get(get_saldo_users))
-        .route("/api/saldos/user/:id", get(get_saldo_user))
+        .route("/api/saldos/{id}", get(get_saldo))
+        .route("/api/saldos/users/{id}", get(get_saldo_users))
+        .route("/api/saldos/user/{id}", get(get_saldo_user))
         .route("/api/saldos", post(create_saldo))
-        .route("/api/saldos/:id", put(update_saldo))
-        .route("/api/saldos/:id", delete(delete_saldo))
+        .route("/api/saldos/{id}", put(update_saldo))
+        .route("/api/saldos/{id}", delete(delete_saldo))
         .route_layer(middleware::from_fn_with_state(app_state.clone(), jwt::auth))
         .with_state(app_state.clone())
 }

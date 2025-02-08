@@ -1,7 +1,8 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone,  Serialize, Deserialize, ToSchema)]
 pub struct CreateSaldoRequest {
     #[serde(rename = "user_id")]
     pub user_id: i32,
@@ -24,7 +25,7 @@ impl CreateSaldoRequest {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone,  Serialize, Deserialize, ToSchema)]
 pub struct UpdateSaldoRequest {
     #[serde(rename = "saldo_id")]
     pub saldo_id: i32,

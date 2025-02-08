@@ -1,9 +1,10 @@
 use chrono::{DateTime, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use crate::entities::topups;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
 pub struct TopupResponse {
     pub topup_id: i32,
     pub user_id: i32,
@@ -11,7 +12,10 @@ pub struct TopupResponse {
     pub topup_amount: i32,
     pub topup_method: String,
     pub topup_time: DateTime<Utc>,
+    #[schema(format = "date-time")]
     pub created_at: Option<DateTime<Utc>>,
+
+    #[schema(format = "date-time")]
     pub updated_at: Option<DateTime<Utc>>,
 }
 

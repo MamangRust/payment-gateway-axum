@@ -1,12 +1,12 @@
 use rand::Rng;
 
 pub fn random_vcc() -> Result<String, &'static str> {
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
 
     // Generate a random 15-digit number as a string
     let mut random_number = String::new();
     for _ in 0..15 {
-        random_number.push_str(&rng.gen_range(0..10).to_string());
+        random_number.push_str(&rng.random_range(0..10).to_string());
     }
 
     // Prepend "4" to signify a Visa-like card

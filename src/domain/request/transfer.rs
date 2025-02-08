@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct CreateTransferRequest {
     pub transfer_from: i32,
     pub transfer_to: i32,
@@ -25,7 +26,7 @@ impl CreateTransferRequest {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct UpdateTransferRequest {
     pub transfer_id: i32,
     pub transfer_from: i32,

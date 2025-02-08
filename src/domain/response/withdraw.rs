@@ -1,15 +1,19 @@
 use chrono::{DateTime, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 use crate::entities::withdraws;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
 pub struct WithdrawResponse {
     pub withdraw_id: i32,
     pub user_id: i32,
     pub withdraw_amount: i32,
     pub withdraw_time: DateTime<Utc>,
+    #[schema(format = "date-time")]
     pub created_at: Option<DateTime<Utc>>,
+
+    #[schema(format = "date-time")]
     pub updated_at: Option<DateTime<Utc>>,
 }
 

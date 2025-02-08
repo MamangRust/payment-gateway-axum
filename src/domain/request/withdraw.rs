@@ -1,7 +1,8 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct CreateWithdrawRequest {
     pub user_id: i32,
     pub withdraw_amount: i32,
@@ -26,7 +27,7 @@ impl CreateWithdrawRequest {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct UpdateWithdrawRequest {
     pub user_id: i32,
     pub withdraw_id: i32,

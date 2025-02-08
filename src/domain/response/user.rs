@@ -1,15 +1,19 @@
+use crate::entities::users;
 use chrono::{DateTime, TimeZone, Utc};
 use serde::{Deserialize, Serialize};
-use crate::entities::users;
+use utoipa::ToSchema;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
 pub struct UserResponse {
     pub id: i32,
     pub firstname: String,
     pub lastname: String,
     pub email: String,
     pub noc_transfer: String,
+    #[schema(format = "date-time")]
     pub created_at: Option<DateTime<Utc>>,
+
+    #[schema(format = "date-time")]
     pub updated_at: Option<DateTime<Utc>>,
 }
 

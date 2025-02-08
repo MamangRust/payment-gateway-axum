@@ -1,12 +1,9 @@
-use serde::{
-    Deserialize,
-    Serialize
-};
+use serde::{Deserialize, Serialize};
 
 use regex::Regex;
+use utoipa::ToSchema;
 
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone,  Serialize, Deserialize, ToSchema)]
 pub struct RegisterRequest {
     pub firstname: String,
     pub lastname: String,
@@ -17,7 +14,6 @@ pub struct RegisterRequest {
 
 impl RegisterRequest {
     pub fn validate(&self) -> Result<(), String> {
-
         if self.firstname.is_empty() {
             return Err("First name is required".to_string());
         }
@@ -46,12 +42,11 @@ impl RegisterRequest {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct LoginRequest{
+#[derive(Debug, Clone,  Serialize, Deserialize, ToSchema)]
+pub struct LoginRequest {
     pub email: String,
-    pub password: String
+    pub password: String,
 }
-
 
 impl LoginRequest {
     pub fn validate(&self) -> Result<(), String> {
@@ -68,3 +63,4 @@ impl LoginRequest {
         Ok(())
     }
 }
+

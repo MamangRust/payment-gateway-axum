@@ -5,8 +5,11 @@
 
 
 ### Cara Kerjanya Payment Gateway ini yang menggunakan axum + seaorm
-<img src="./payment_gateway.png" alt="payment" />
+<img src="./images/payment_gateway.png" alt="payment" />
 
+
+### OpenApi in Utoipa
+<img src="./images/example.png" alt="openapi" />
 
 
 ### Migrate

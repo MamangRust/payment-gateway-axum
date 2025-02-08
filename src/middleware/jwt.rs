@@ -1,4 +1,3 @@
-use std::sync::Arc;
 use axum::{
     body::Body,
     extract::State,
@@ -8,6 +7,7 @@ use axum::{
     Json,
 };
 use axum_extra::extract::cookie::CookieJar;
+use std::sync::Arc;
 
 use crate::{domain::response::ErrorResponse, state::AppState};
 

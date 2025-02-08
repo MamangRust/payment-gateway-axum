@@ -1,7 +1,8 @@
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct CreateUserRequest {
     pub firstname: String,
     pub lastname: String,
@@ -41,7 +42,7 @@ impl CreateUserRequest {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, ToSchema)]
 pub struct UpdateUserRequest {
     pub id: Option<i32>,
     pub firstname: Option<String>,
