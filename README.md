@@ -2,8 +2,6 @@
 
 
 
-
-
 ### Cara Kerjanya Payment Gateway ini yang menggunakan axum + seaorm
 <img src="./images/payment_gateway.png" alt="payment" />
 

@@ -26,9 +26,9 @@ use std::sync::Arc;
         ("bearer_auth" = [])
     ),
     responses(
-        (status = 200, description = "List of saldos", body = ApiResponse<Vec<SaldoResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "List of saldo records", body = ApiResponse<Vec<SaldoResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn get_saldos(
@@ -44,16 +44,16 @@ pub async fn get_saldos(
     get,
     path = "/api/saldos/{id}",
     tag = "Saldo",
-security(
+    security(
         ("bearer_auth" = [])
     ),
     params(
         ("id" = i32, Path, description = "Saldo ID")
     ),
     responses(
-        (status = 200, description = "Saldo details", body = ApiResponse<Option<SaldoResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 404, description = "Saldo not found", body = String),
+        (status = 200, description = "Saldo details retrieved successfully", body = ApiResponse<Option<SaldoResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 404, description = "Saldo record not found", body = String),
     )
 )]
 pub async fn get_saldo(
@@ -76,12 +76,12 @@ pub async fn get_saldo(
         ("bearer_auth" = [])
     ),
     params(
-        ("id" = i32, Path, description = "Saldo ID")
+        ("id" = i32, Path, description = "User ID")
     ),
     responses(
-        (status = 200, description = "Saldo details", body = ApiResponse<Option<Vec<SaldoResponse>>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 404, description = "Saldo not found", body = String),
+        (status = 200, description = "Saldo details retrieved successfully", body = ApiResponse<Option<Vec<SaldoResponse>>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 404, description = "Saldo records not found for the user", body = String),
     )
 )]
 pub async fn get_saldo_users(
@@ -103,10 +103,13 @@ pub async fn get_saldo_users(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "User ID")
+    ),
     responses(
-        (status = 200, description = "List of saldos", body = ApiResponse<Option<SaldoResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "Saldo details retrieved successfully", body = ApiResponse<Option<SaldoResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn get_saldo_user(
@@ -125,13 +128,14 @@ pub async fn get_saldo_user(
     post,
     path = "/api/saldos",
     tag = "Saldo",
+    request_body = CreateSaldoRequest,
     security(
         ("bearer_auth" = [])
     ),
     responses(
-        (status = 200, description = "List of saldos", body = ApiResponse<SaldoResponse>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 201, description = "Saldo record created successfully", body = ApiResponse<SaldoResponse>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn create_saldo(
@@ -151,10 +155,14 @@ pub async fn create_saldo(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "Saldo ID")
+    ),
+    request_body = UpdateSaldoRequest,
     responses(
-        (status = 200, description = "List of saldos", body = ApiResponse<SaldoResponse>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "Saldo record updated successfully", body = ApiResponse<SaldoResponse>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn update_saldo(
@@ -178,10 +186,13 @@ pub async fn update_saldo(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "Saldo ID")
+    ),
     responses(
-        (status = 200, description = "Saldo deleted successfully", body = serde_json::Value),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "Saldo record deleted successfully", body = serde_json::Value),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn delete_saldo(

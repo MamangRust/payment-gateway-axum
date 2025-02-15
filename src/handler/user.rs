@@ -26,9 +26,9 @@ use std::sync::Arc;
         ("bearer_auth" = [])
     ),
     responses(
-        (status = 200, description = "List of topups", body = ApiResponse<Vec<UserResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "List of user records", body = ApiResponse<Vec<UserResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn get_users(
@@ -44,16 +44,16 @@ pub async fn get_users(
     get,
     path = "/api/users/{id}",
     tag = "User",
-security(
+    security(
         ("bearer_auth" = [])
     ),
     params(
         ("id" = i32, Path, description = "User ID")
     ),
     responses(
-        (status = 200, description = "User details", body = ApiResponse<Option<UserResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 404, description = "Topup not found", body = String),
+        (status = 200, description = "User details retrieved successfully", body = ApiResponse<Option<UserResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 404, description = "User not found", body = String),
     )
 )]
 pub async fn get_user(
@@ -75,10 +75,11 @@ pub async fn get_user(
     security(
         ("bearer_auth" = [])
     ),
+    request_body = RegisterRequest,
     responses(
-        (status = 200, description = "List of saldos", body = ApiResponse<UserResponse>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 201, description = "User account created successfully", body = ApiResponse<UserResponse>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn create_user(
@@ -98,10 +99,14 @@ pub async fn create_user(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "User ID")
+    ),
+    request_body = UpdateUserRequest,
     responses(
-        (status = 200, description = "Update Topup", body = ApiResponse<UserResponse>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "User record updated successfully", body = ApiResponse<UserResponse>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn update_user(
@@ -125,10 +130,13 @@ pub async fn update_user(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "User ID")
+    ),
     responses(
-        (status = 200, description = "User deleted successfully", body = serde_json::Value),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "User record deleted successfully", body = serde_json::Value),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn delete_user(

@@ -26,9 +26,9 @@ use std::sync::Arc;
         ("bearer_auth" = [])
     ),
     responses(
-        (status = 200, description = "List of topups", body = ApiResponse<Vec<WithdrawResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "List of withdrawals", body = ApiResponse<Vec<WithdrawResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn get_withdraws(
@@ -44,16 +44,16 @@ pub async fn get_withdraws(
     get,
     path = "/api/withdraws/{id}",
     tag = "Withdraw",
-security(
+    security(
         ("bearer_auth" = [])
     ),
     params(
-        ("id" = i32, Path, description = "Topup ID")
+        ("id" = i32, Path, description = "Withdrawal ID")
     ),
     responses(
-        (status = 200, description = "Topup details", body = ApiResponse<Option<WithdrawResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 404, description = "Topup not found", body = String),
+        (status = 200, description = "Withdrawal details retrieved successfully", body = ApiResponse<Option<WithdrawResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 404, description = "Withdrawal not found", body = String),
     )
 )]
 pub async fn get_withdraw(
@@ -76,12 +76,12 @@ pub async fn get_withdraw(
         ("bearer_auth" = [])
     ),
     params(
-        ("id" = i32, Path, description = "Topup ID")
+        ("id" = i32, Path, description = "User ID")
     ),
     responses(
-        (status = 200, description = "Topup details", body = ApiResponse<Option<Vec<WithdrawResponse>>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 404, description = "Topup not found", body = String),
+        (status = 200, description = "List of user withdrawals", body = ApiResponse<Option<Vec<WithdrawResponse>>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 404, description = "Withdrawals not found", body = String),
     )
 )]
 pub async fn get_withdraw_users(
@@ -108,10 +108,13 @@ pub async fn get_withdraw_users(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "User ID")
+    ),
     responses(
-        (status = 200, description = "List of saldos", body = ApiResponse<Option<WithdrawResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "User withdrawal details", body = ApiResponse<Option<WithdrawResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn get_withdraw_user(
@@ -138,10 +141,11 @@ pub async fn get_withdraw_user(
     security(
         ("bearer_auth" = [])
     ),
+    request_body = CreateWithdrawRequest,
     responses(
-        (status = 200, description = "List of saldos", body = ApiResponse<WithdrawResponse>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 201, description = "Withdrawal request created successfully", body = ApiResponse<WithdrawResponse>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn create_withdraw(
@@ -166,10 +170,14 @@ pub async fn create_withdraw(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "Withdrawal ID")
+    ),
+    request_body = UpdateWithdrawRequest,
     responses(
-        (status = 200, description = "Update Topup", body = ApiResponse<WithdrawResponse>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "Withdrawal record updated successfully", body = ApiResponse<WithdrawResponse>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn update_withdraw(
@@ -198,10 +206,13 @@ pub async fn update_withdraw(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "Withdrawal ID")
+    ),
     responses(
-        (status = 200, description = "Withdraw deleted successfully", body = serde_json::Value),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "Withdrawal record deleted successfully", body = serde_json::Value),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn delete_withdraw(

@@ -26,9 +26,9 @@ use std::sync::Arc;
         ("bearer_auth" = [])
     ),
     responses(
-        (status = 200, description = "List of transfer", body = ApiResponse<Vec<TransferResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "List of transfer records", body = ApiResponse<Vec<TransferResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn get_transfers(
@@ -43,17 +43,17 @@ pub async fn get_transfers(
 #[utoipa::path(
     get,
     path = "/api/transfers/{id}",
-    tag = "Topup",
-security(
+    tag = "Transfer",
+    security(
         ("bearer_auth" = [])
     ),
     params(
         ("id" = i32, Path, description = "Transfer ID")
     ),
     responses(
-        (status = 200, description = "Transfer details", body = ApiResponse<Option<TransferResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 404, description = "Topup not found", body = String),
+        (status = 200, description = "Transfer details retrieved successfully", body = ApiResponse<Option<TransferResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 404, description = "Transfer record not found", body = String),
     )
 )]
 pub async fn get_transfer(
@@ -76,12 +76,12 @@ pub async fn get_transfer(
         ("bearer_auth" = [])
     ),
     params(
-        ("id" = i32, Path, description = "Transfer ID")
+        ("id" = i32, Path, description = "User ID")
     ),
     responses(
-        (status = 200, description = "Topup details", body = ApiResponse<Option<Vec<TransferResponse>>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 404, description = "Topup not found", body = String),
+        (status = 200, description = "Transfer details retrieved successfully", body = ApiResponse<Option<Vec<TransferResponse>>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 404, description = "Transfer records not found for the user", body = String),
     )
 )]
 pub async fn get_transfer_users(
@@ -108,10 +108,13 @@ pub async fn get_transfer_users(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "User ID")
+    ),
     responses(
-        (status = 200, description = "List of transfer", body = ApiResponse<Option<TransferResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "Transfer details retrieved successfully", body = ApiResponse<Option<TransferResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn get_transfer_user(
@@ -138,10 +141,11 @@ pub async fn get_transfer_user(
     security(
         ("bearer_auth" = [])
     ),
+    request_body = CreateTransferRequest,
     responses(
-        (status = 200, description = "List of transfers", body = ApiResponse<TransferResponse>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 201, description = "Transfer record created successfully", body = ApiResponse<TransferResponse>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn create_transfer(
@@ -166,10 +170,14 @@ pub async fn create_transfer(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "Transfer ID")
+    ),
+    request_body = UpdateTransferRequest,
     responses(
-        (status = 200, description = "Update Transfer", body = ApiResponse<TransferResponse>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "Transfer record updated successfully", body = ApiResponse<TransferResponse>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn update_transfer(
@@ -198,10 +206,13 @@ pub async fn update_transfer(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "Transfer ID")
+    ),
     responses(
-        (status = 200, description = "Transfer deleted successfully", body = serde_json::Value),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "Transfer record deleted successfully", body = serde_json::Value),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn delete_transfer(

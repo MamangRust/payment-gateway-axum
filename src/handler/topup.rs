@@ -26,9 +26,9 @@ use std::sync::Arc;
         ("bearer_auth" = [])
     ),
     responses(
-        (status = 200, description = "List of topups", body = ApiResponse<Vec<TopupResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "List of topup records", body = ApiResponse<Vec<TopupResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn get_topups(
@@ -44,16 +44,16 @@ pub async fn get_topups(
     get,
     path = "/api/topups/{id}",
     tag = "Topup",
-security(
+    security(
         ("bearer_auth" = [])
     ),
     params(
         ("id" = i32, Path, description = "Topup ID")
     ),
     responses(
-        (status = 200, description = "Topup details", body = ApiResponse<Option<TopupResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 404, description = "Topup not found", body = String),
+        (status = 200, description = "Topup details retrieved successfully", body = ApiResponse<Option<TopupResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 404, description = "Topup record not found", body = String),
     )
 )]
 pub async fn get_topup(
@@ -76,12 +76,12 @@ pub async fn get_topup(
         ("bearer_auth" = [])
     ),
     params(
-        ("id" = i32, Path, description = "Topup ID")
+        ("id" = i32, Path, description = "User ID")
     ),
     responses(
-        (status = 200, description = "Topup details", body = ApiResponse<Option<Vec<TopupResponse>>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 404, description = "Topup not found", body = String),
+        (status = 200, description = "Topup details retrieved successfully", body = ApiResponse<Option<Vec<TopupResponse>>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 404, description = "Topup records not found for the user", body = String),
     )
 )]
 pub async fn get_topup_users(
@@ -103,10 +103,13 @@ pub async fn get_topup_users(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "User ID")
+    ),
     responses(
-        (status = 200, description = "List of saldos", body = ApiResponse<Option<TopupResponse>>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "Topup details retrieved successfully", body = ApiResponse<Option<TopupResponse>>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn get_topup_user(
@@ -128,10 +131,11 @@ pub async fn get_topup_user(
     security(
         ("bearer_auth" = [])
     ),
+    request_body = CreateTopupRequest,
     responses(
-        (status = 200, description = "List of saldos", body = ApiResponse<TopupResponse>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 201, description = "Topup record created successfully", body = ApiResponse<TopupResponse>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn create_topup(
@@ -151,10 +155,14 @@ pub async fn create_topup(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "Topup ID")
+    ),
+    request_body = UpdateTopupRequest,
     responses(
-        (status = 200, description = "Update Topup", body = ApiResponse<TopupResponse>),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "Topup record updated successfully", body = ApiResponse<TopupResponse>),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn update_topup(
@@ -178,10 +186,13 @@ pub async fn update_topup(
     security(
         ("bearer_auth" = [])
     ),
+    params(
+        ("id" = i32, Path, description = "Topup ID")
+    ),
     responses(
-        (status = 200, description = "Topup deleted successfully", body = serde_json::Value),
-        (status = 401, description = "Unauthorized", body = String),
-        (status = 500, description = "Internal Server Error", body = String),
+        (status = 200, description = "Topup record deleted successfully", body = serde_json::Value),
+        (status = 401, description = "Unauthorized access", body = String),
+        (status = 500, description = "Internal server error", body = String),
     )
 )]
 pub async fn delete_topup(
